@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">BackButton</string>
+    <string name="accessibility_service_description">返回键</string>
+</resources>
