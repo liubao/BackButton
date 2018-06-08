@@ -148,39 +148,45 @@ public class FloatingView extends AppCompatImageView {
         windowManager.addView(FloatingView.this, mParams);
     }
 
-    int offsetY;
-    int offsetX;
-    int maxOffsetY;
     int maxOffsetX;
+    int maxOffsetY;
+    float downX;
+    float downY;
+    float rawX;
+    float rawY;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         int action = event.getActionMasked();
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                oldY = event.getRawY();
-                oldX = event.getRawX();
                 moved = false;
-                maxOffsetY = 0;
+                oldX = event.getRawX();
+                oldY = event.getRawY();
                 maxOffsetX = 0;
+                maxOffsetY = 0;
+                downX = event.getRawX();
+                downY = event.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
-                offsetY = (int) (event.getRawY() - oldY);
-                offsetX = (int) (event.getRawX() - oldX);
-                mParams.y += offsetY;//相对于屏幕左上角的位置
-                mParams.x += offsetX;//相对于屏幕左上角的位置
+                rawX = event.getRawX();
+                rawY = event.getRawY();
+
+                mParams.x += rawX - oldX;//相对于屏幕左上角的位置
+                mParams.y += rawY - oldY;//相对于屏幕左上角的位置
                 windowManager.updateViewLayout(FloatingView.this, mParams);
-                maxOffsetY = Math.max(maxOffsetY, Math.abs(offsetY));
-                maxOffsetX = Math.max(maxOffsetX, Math.abs(offsetX));
+
+                maxOffsetX = (int) Math.max(maxOffsetX, Math.abs(rawX - downX));
+                maxOffsetY = (int) Math.max(maxOffsetY, Math.abs(rawY - downY));
                 if (maxOffsetY > touchSlop || maxOffsetX > touchSlop) {
                     moved = true;
                 }
-                oldY = event.getRawY();
-                oldX = event.getRawX();
+                oldX = rawX;
+                oldY = rawY;
                 break;
             case MotionEvent.ACTION_UP:
-                oldY = event.getRawY();
                 oldX = event.getRawX();
+                oldY = event.getRawY();
                 if (oldX < Utils.screenWidth / 2) {
                     mParams.x = 0;
                 } else {
