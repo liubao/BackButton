@@ -1,9 +1,13 @@
 package com.example.liubao.backbutton;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -13,8 +17,7 @@ import java.io.IOException;
  * * Created by liubao on 2018/5/21.
  */
 public class Utils {
-    public static float screenWidth;
-    public static int screenHeight;
+
 
     public static Bitmap drawableToBitmap(Drawable drawable, int w, int h) {
         System.out.println("Drawable转Bitmap");
@@ -47,5 +50,21 @@ public class Utils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 返回当前程序版本名
+     */
+    public static PackageInfo getPackageInfo(Context context) {
+        try {
+            // ---get the package info---
+            PackageManager pm = context.getPackageManager();
+            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+            return pi;
+
+        } catch (Exception e) {
+            Log.e("VersionInfo", "Exception", e);
+        }
+        return null;
     }
 }

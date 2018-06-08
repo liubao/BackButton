@@ -4,6 +4,7 @@ import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -11,9 +12,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.text.style.AbsoluteSizeSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -31,11 +35,14 @@ public class MainActivity extends AppCompatActivity {
     public static final boolean DEBUG = true;
     private String serviceName;
     private View bigV;
+    private TextView hintTV;
+    private Resources resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        resources = getResources();
         bigV = findViewById(R.id.big);
         bigV.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +99,18 @@ public class MainActivity extends AppCompatActivity {
         });
         accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn(serviceName));
         askPer();
+        setHint();
+    }
+
+    private void setHint() {
+        hintTV = findViewById(R.id.hint);
+        SpannableBuilder spannableBuilder = new SpannableBuilder();
+        spannableBuilder.append("食用方法：轻触返回，长按桌面。", new AbsoluteSizeSpan(DensityUtil.dip2px(18)));
+        spannableBuilder.append("\n");
+        spannableBuilder.append("当前版本", new AbsoluteSizeSpan(DensityUtil.dip2px(13)));
+        spannableBuilder.append("v" + BBCommon.versionName, new AbsoluteSizeSpan(DensityUtil.dip2px(13)),
+                new ForegroundColorSpan(resources.getColor(R.color.colorAccent)));
+        hintTV.setText(spannableBuilder.build());
     }
 
     private void makeCrash() {

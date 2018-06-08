@@ -187,10 +187,10 @@ public class FloatingView extends AppCompatImageView {
             case MotionEvent.ACTION_UP:
                 oldX = event.getRawX();
                 oldY = event.getRawY();
-                if (oldX < Utils.screenWidth / 2) {
+                if (oldX < BBCommon.screenWidth / 2) {
                     mParams.x = 0;
                 } else {
-                    mParams.x = (int) (Utils.screenWidth - getWidth());
+                    mParams.x = (int) (BBCommon.screenWidth - getWidth());
                 }
                 windowManager.updateViewLayout(FloatingView.this, mParams);
                 break;
