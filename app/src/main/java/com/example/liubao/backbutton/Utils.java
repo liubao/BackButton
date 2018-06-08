@@ -57,11 +57,8 @@ public class Utils {
      */
     public static PackageInfo getPackageInfo(Context context) {
         try {
-            // ---get the package info---
             PackageManager pm = context.getPackageManager();
-            PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
-            return pi;
-
+            return pm.getPackageInfo(context.getPackageName(), 0);
         } catch (Exception e) {
             Log.e("VersionInfo", "Exception", e);
         }
