@@ -2,6 +2,7 @@ package com.example.liubao.backbutton;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.CornerPathEffect;
@@ -146,6 +147,7 @@ public class FloatingView extends AppCompatImageView {
         mParams.width = width;
         mParams.height = height;
         windowManager.addView(FloatingView.this, mParams);
+        screenW = BBCommon.screenWidth;
     }
 
     int maxOffsetX;
@@ -154,6 +156,17 @@ public class FloatingView extends AppCompatImageView {
     float downY;
     float rawX;
     float rawY;
+
+
+    @Override
+    protected void onConfigurationChanged(Configuration newConfig) {
+        //横屏
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            screenW = BBCommon.screenHeight;
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            screenW = BBCommon.screenWidth;
+        }
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -187,16 +200,20 @@ public class FloatingView extends AppCompatImageView {
             case MotionEvent.ACTION_UP:
                 oldX = event.getRawX();
                 oldY = event.getRawY();
-                if (oldX < BBCommon.screenWidth / 2) {
+
+                //纵向
+                if (oldX < screenW / 2) {
                     mParams.x = 0;
                 } else {
-                    mParams.x = (int) (BBCommon.screenWidth - getWidth());
+                    mParams.x = (int) (screenW - getWidth());
                 }
                 windowManager.updateViewLayout(FloatingView.this, mParams);
                 break;
         }
         return super.dispatchTouchEvent(event);
     }
+
+    private float screenW;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
