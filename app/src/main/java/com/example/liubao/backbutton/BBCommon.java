@@ -5,7 +5,7 @@ package com.example.liubao.backbutton;
  */
 public class BBCommon {
     public static float screenWidth;
-    public static int screenHeight;
+    public static float screenHeight;
     public static String versionName;
     public static int versioncode;
 }

@@ -160,12 +160,32 @@ public class FloatingView extends AppCompatImageView {
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
+        float oldH = 0;
+        float newH = 0;
         //横屏
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             screenW = BBCommon.screenHeight;
+            if (mParams.x > BBCommon.screenWidth / 2) {
+                mParams.x = (int) screenW;
+            } else {
+                mParams.x = 0;
+            }
+            newH = BBCommon.screenWidth;
+            oldH = BBCommon.screenHeight;
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             screenW = BBCommon.screenWidth;
+            if (mParams.x > BBCommon.screenHeight / 2) {
+                mParams.x = (int) screenW;
+            } else {
+                mParams.x = 0;
+            }
+            newH = BBCommon.screenHeight;
+            oldH = BBCommon.screenWidth;
         }
+        if (oldH != 0) {
+            mParams.y = (int) (mParams.y / oldH * newH);
+        }
+        windowManager.updateViewLayout(FloatingView.this, mParams);
     }
 
     @Override
