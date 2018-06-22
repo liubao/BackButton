@@ -16,6 +16,7 @@ import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,6 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatCheckBox accessibilityServiceSwitch;
     public static final boolean DEBUG = true;
     private String serviceName;
-    private View bigV;
     private TextView hintTV;
     private Resources resources;
 
@@ -43,13 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         resources = getResources();
-        bigV = findViewById(R.id.big);
-        bigV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                makeCrash();
-            }
-        });
 
         serviceName = getPackageName() + "/." + "MyAccessibilityService";
         seekBar = findViewById(R.id.seek);
@@ -98,15 +91,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn(serviceName));
+
         askPer();
         setHint();
+        setFun();
+    }
+
+    private void setFun() {
+        RadioGroup doubleRG = findViewById(R.id.doubleRG);
+        doubleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                FloatingView.getInstance(MainActivity.this).changeDoubleClickAction(checkedId);
+            }
+        });
+        doubleRG.check(FloatingView.getInstance(MainActivity.this).getCheckedId(FloatingView.TAG_DOUBLE));
+
+        RadioGroup longRG = findViewById(R.id.longRG);
+        longRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                FloatingView.getInstance(MainActivity.this).changeLongClickAction(checkedId);
+            }
+        });
+        longRG.check(FloatingView.getInstance(MainActivity.this).getCheckedId(FloatingView.TAG_LONG));
     }
 
     private void setHint() {
         hintTV = findViewById(R.id.hint);
         SpannableBuilder spannableBuilder = new SpannableBuilder();
-        spannableBuilder.append("食用方法：轻触返回，长按桌面。", new AbsoluteSizeSpan(DensityUtil.dip2px(18)));
-        spannableBuilder.append("\n");
+//        spannableBuilder.append("食用方法：轻触返回，长按桌面。", new AbsoluteSizeSpan(DensityUtil.dip2px(18)));
+//        spannableBuilder.append("\n");
         spannableBuilder.append("当前版本", new AbsoluteSizeSpan(DensityUtil.dip2px(13)));
         spannableBuilder.append("v" + BBCommon.versionName, new AbsoluteSizeSpan(DensityUtil.dip2px(13)),
                 new ForegroundColorSpan(resources.getColor(R.color.colorAccent)));

@@ -12,18 +12,26 @@ import android.graphics.PixelFormat;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatImageView;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import java.util.HashMap;
+
 /**
  * * Created by liubao on 2018/5/12.
  */
 
 public class FloatingView extends AppCompatImageView {
+
+    public static final int TAG_DOUBLE = 0;
+    public static final int TAG_LONG = 1;
     public static FloatingView instance;
+    private Intent doubleClickIntent;
+    private Intent longClickIntent;
 
     public static FloatingView getInstance(Context context) {
         if (instance == null) {
@@ -46,7 +54,12 @@ public class FloatingView extends AppCompatImageView {
     private float oldY;
     private float oldX;
     private boolean moved;
-//    GestureDetector gestureDetector;
+    LocalBroadcastManager localBroadcastManager;
+
+    final Intent backIntent = new Intent(MyAccessibilityService.ACTION_BACK);
+    final Intent homeIntent = new Intent(MyAccessibilityService.ACTION_HOME);
+    final Intent recentsIntent = new Intent(MyAccessibilityService.ACTION_RECENTS);
+
 
     public FloatingView(final Context context) {
         super(context);
@@ -61,58 +74,12 @@ public class FloatingView extends AppCompatImageView {
         circlePaint.setColor(Color.parseColor(circleColor));
         circlePaint.setAlpha(125);
 
-        final Intent backIntent = new Intent(MyAccessibilityService.ACTION_BACK);
-        final Intent homeIntent = new Intent(MyAccessibilityService.ACTION_HOME);
-        final Intent recentsIntent = new Intent(MyAccessibilityService.ACTION_RECENTS);
 
         path = new Path();
         radius = width / 2f - stokeWidth;
         bianXinJu = (float) (radius * Math.cos(Math.PI / 3f));
         triangleSideLength = (float) ((radius * Math.cos(Math.PI / 6f)) * 2);
-
-
-        final LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(context);
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (moved) {
-                    return;
-                }
-                localBroadcastManager.sendBroadcast(backIntent);
-            }
-        });
-        setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                if (moved) {
-                    return true;
-                }
-                localBroadcastManager.sendBroadcast(homeIntent);
-                return true;
-            }
-        });
-//        gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-//
-//            @Override
-//            public boolean onSingleTapConfirmed(MotionEvent e) {//单击事件
-//                //表示单击，此处也可以做单击的操作
-//                localBroadcastManager.sendBroadcast(backIntent);
-//                return super.onSingleTapConfirmed(e);
-//            }
-//
-//            @Override
-//            public boolean onDoubleTap(MotionEvent e) {//双击事件
-//                localBroadcastManager.sendBroadcast(homeIntent);
-//                return super.onDoubleTap(e);  //此处做双击具体业务逻辑
-//            }
-//
-//            @Override
-//            public void onLongPress(MotionEvent e) {
-//                super.onLongPress(e);
-//                localBroadcastManager.sendBroadcast(recentsIntent);
-//            }
-//
-//        });
+        localBroadcastManager = LocalBroadcastManager.getInstance(context);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
@@ -237,8 +204,11 @@ public class FloatingView extends AppCompatImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        gestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
+        if (doubleClickFunDisabled || gestureDetector == null) {
+            gestureDetector = null;
+            return super.onTouchEvent(event);
+        }
+        return gestureDetector.onTouchEvent(event);
     }
 
     @Override
@@ -279,5 +249,109 @@ public class FloatingView extends AppCompatImageView {
         mParams.width = width;
         mParams.height = height;
         windowManager.updateViewLayout(FloatingView.this, mParams);
+    }
+
+    GestureDetector gestureDetector;
+
+    public HashMap<Integer, Intent> LONG_CLICK_ACTION = new HashMap<Integer, Intent>() {
+        {
+            put(R.id.longRG_home, homeIntent);
+            put(R.id.longRG_recent, recentsIntent);
+            put(R.id.longRG_disable, null);
+        }
+    };
+    public HashMap<Integer, Intent> DOUBLE_CLICK_ACTION = new HashMap<Integer, Intent>() {
+        {
+            put(R.id.doubleRG_home, homeIntent);
+            put(R.id.doubleRG_recent, recentsIntent);
+            put(R.id.doubleRG_disable, null);
+        }
+    };
+
+    public void dispatchClick(Intent intent) {
+        if (moved || intent == null) {
+            return;
+        }
+        localBroadcastManager.sendBroadcast(intent);
+    }
+
+    public boolean doubleClickFunDisabled;
+
+    public void disableDoubleClickFun(boolean disabled) {
+        doubleClickFunDisabled = disabled;
+        if (disabled) {
+            OnClickListener onClickListener = new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dispatchClick(backIntent);
+                }
+            };
+
+            setOnClickListener(onClickListener);
+
+            OnLongClickListener onLongClickListener = new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    dispatchClick(longClickIntent);
+                    return true;
+                }
+            };
+            setOnLongClickListener(onLongClickListener);
+        } else {
+            setOnClickListener(null);
+            setOnLongClickListener(null);
+            gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e) {//单击事件
+                    //表示单击，此处也可以做单击的操作
+                    dispatchClick(backIntent);
+                    return super.onSingleTapConfirmed(e);
+                }
+
+                @Override
+                public boolean onDoubleTap(MotionEvent e) {//双击事件
+                    dispatchClick(doubleClickIntent);
+                    return super.onDoubleTap(e);  //此处做双击具体业务逻辑
+                }
+
+                @Override
+                public void onLongPress(MotionEvent e) {
+                    super.onLongPress(e);
+                    dispatchClick(longClickIntent);
+                }
+            });
+        }
+    }
+
+    public void changeDoubleClickAction(int checkedId) {
+        doubleClickIntent = DOUBLE_CLICK_ACTION.get(checkedId);
+        disableDoubleClickFun(doubleClickIntent == null);
+    }
+
+    public void changeLongClickAction(int checkedId) {
+        longClickIntent = LONG_CLICK_ACTION.get(checkedId);
+    }
+
+    public int getCheckedId(int tag) {
+        Integer idI = null;
+        switch (tag) {
+            case TAG_DOUBLE: //
+                idI = getKey(DOUBLE_CLICK_ACTION, doubleClickIntent);
+                break;
+            case TAG_LONG: //
+                idI = getKey(LONG_CLICK_ACTION, longClickIntent);
+                break;
+        }
+        return idI == null ? 0 : idI;
+    }
+
+    public static Integer getKey(HashMap<Integer, Intent> map, Intent value) {
+        for (Integer key : map.keySet()) {
+            if (map.get(key) == value) {
+                return key;
+            }
+        }
+        return null;
     }
 }
