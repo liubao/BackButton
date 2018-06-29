@@ -42,7 +42,7 @@ public class MyAccessibilityService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
-        FloatingView.getInstance(this).show();
+        FloatingView.getInstance().show();
     }
 
     @Override

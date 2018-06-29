@@ -29,13 +29,15 @@ public class FloatingView extends AppCompatImageView {
 
     public static final int TAG_DOUBLE = 0;
     public static final int TAG_LONG = 1;
+    public static final String SHARED_PREFERENCES_DOUBLE = "s_p_" + TAG_DOUBLE;
+    public static final String SHARED_PREFERENCES_LONG = "s_p_" + TAG_LONG;
     public static FloatingView instance;
     private Intent doubleClickIntent;
     private Intent longClickIntent;
 
-    public static FloatingView getInstance(Context context) {
+    public static FloatingView getInstance() {
         if (instance == null) {
-            instance = new FloatingView(context);
+            instance = new FloatingView(MainApplication.context);
         }
         return instance;
     }
@@ -333,6 +335,7 @@ public class FloatingView extends AppCompatImageView {
         longClickIntent = LONG_CLICK_ACTION.get(checkedId);
     }
 
+    //内存中查找
     public int getCheckedId(int tag) {
         Integer idI = null;
         switch (tag) {
@@ -341,6 +344,32 @@ public class FloatingView extends AppCompatImageView {
                 break;
             case TAG_LONG: //
                 idI = getKey(LONG_CLICK_ACTION, longClickIntent);
+                break;
+        }
+        return idI == null ? 0 : idI;
+    }
+
+    //文件中找
+    public void putCheckedIdToFile(int tag) {
+        switch (tag) {
+            case TAG_DOUBLE: //
+                SharedPreferencesUtils.putInt(SHARED_PREFERENCES_DOUBLE, getCheckedId(TAG_DOUBLE));
+                break;
+            case TAG_LONG: //
+                SharedPreferencesUtils.putInt(SHARED_PREFERENCES_LONG, getCheckedId(TAG_LONG));
+                break;
+        }
+    }
+
+    //文件中找
+    public Integer getCheckedIdFromFile(int tag) {
+        Integer idI = null;
+        switch (tag) {
+            case TAG_DOUBLE: //
+                idI = SharedPreferencesUtils.getInt(SHARED_PREFERENCES_DOUBLE, 0);
+                break;
+            case TAG_LONG: //
+                idI = SharedPreferencesUtils.getInt(SHARED_PREFERENCES_LONG, 0);
                 break;
         }
         return idI == null ? 0 : idI;

@@ -13,6 +13,7 @@ import com.tencent.bugly.crashreport.CrashReport;
  * * Created by liubao on 2018/5/21.
  */
 public class MainApplication extends Application {
+    private static final String TAG = MainApplication.class.getSimpleName();
     public static Context context;
 
     @Override
@@ -23,7 +24,6 @@ public class MainApplication extends Application {
         initVersion();
         initScreenInfo();
     }
-
 
     private void initVersion() {
         PackageInfo packageInfo = Utils.getPackageInfo(context);

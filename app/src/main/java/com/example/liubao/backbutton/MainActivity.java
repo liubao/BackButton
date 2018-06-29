@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                FloatingView.getInstance(MainActivity.this).updateView(progress);
+                FloatingView.getInstance().updateView(progress);
             }
 
             @Override
@@ -102,26 +102,35 @@ public class MainActivity extends AppCompatActivity {
         doubleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                FloatingView.getInstance(MainActivity.this).changeDoubleClickAction(checkedId);
+                FloatingView.getInstance().changeDoubleClickAction(checkedId);
+                FloatingView.getInstance().putCheckedIdToFile(FloatingView.TAG_DOUBLE);
+
             }
         });
-        doubleRG.check(FloatingView.getInstance(MainActivity.this).getCheckedId(FloatingView.TAG_DOUBLE));
+        int doubleCheckedId = FloatingView.getInstance().getCheckedIdFromFile(FloatingView.TAG_DOUBLE);
+        if (doubleCheckedId == 0) {
+            doubleCheckedId = FloatingView.getInstance().getCheckedId(FloatingView.TAG_DOUBLE);
+        }
+        doubleRG.check(doubleCheckedId);
 
         RadioGroup longRG = findViewById(R.id.longRG);
         longRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                FloatingView.getInstance(MainActivity.this).changeLongClickAction(checkedId);
+                FloatingView.getInstance().changeLongClickAction(checkedId);
+                FloatingView.getInstance().putCheckedIdToFile(FloatingView.TAG_LONG);
             }
         });
-        longRG.check(FloatingView.getInstance(MainActivity.this).getCheckedId(FloatingView.TAG_LONG));
+        int longCheckedId = FloatingView.getInstance().getCheckedIdFromFile(FloatingView.TAG_LONG);
+        if (longCheckedId == 0) {
+            longCheckedId = FloatingView.getInstance().getCheckedId(FloatingView.TAG_LONG);
+        }
+        longRG.check(longCheckedId);
     }
 
     private void setHint() {
         hintTV = findViewById(R.id.hint);
         SpannableBuilder spannableBuilder = new SpannableBuilder();
-//        spannableBuilder.append("食用方法：轻触返回，长按桌面。", new AbsoluteSizeSpan(DensityUtil.dip2px(18)));
-//        spannableBuilder.append("\n");
         spannableBuilder.append("当前版本", new AbsoluteSizeSpan(DensityUtil.dip2px(13)));
         spannableBuilder.append("v" + BBCommon.versionName, new AbsoluteSizeSpan(DensityUtil.dip2px(13)),
                 new ForegroundColorSpan(resources.getColor(R.color.colorAccent)));
@@ -205,5 +214,10 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();   //
     }
 }
