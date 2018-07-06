@@ -8,4 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="hintStyle">
+        <item name="android:textColor">@color/colorHint</item>
+        <item name="android:textSize">@dimen/hint_size</item>
+    </style>
+
+    <style name="functionStyle">
+        <item name="android:textColor">@color/colorFun</item>
+        <item name="android:textSize">@dimen/fun_size</item>
+    </style>
+
 </resources>

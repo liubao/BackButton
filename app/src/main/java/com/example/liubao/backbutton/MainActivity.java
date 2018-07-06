@@ -1,15 +1,11 @@
 package com.example.liubao.backbutton;
 
-import android.Manifest;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.style.AbsoluteSizeSpan;
@@ -26,16 +22,13 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final String APP_PACKAGE_NAME = "com.example.liubao.backbutton";
     private static final String TAG = MainActivity.class.getSimpleName();
-    public final static int OVERLAY_PERMISSION_REQ_CODE = 0;
-    public final static int SERVICE_PERMISSION_REQ_CODE = 111;
-    private static final int MY_PERMISSIONS_WRITE_EXTERNAL_STORAGE = 222;
-    private static final int MY_PERMISSIONS_INTERNET = 333;
-    private SeekBar seekBar;
+    public final static int PERMISSION_REQ_CODE_OVERLAY = 111;
+    public final static int PERMISSION_REQ_CODE_SERVICE = 222;
+
     private AppCompatCheckBox drawOverlaysSwitch;
     private AppCompatCheckBox accessibilityServiceSwitch;
     public static final boolean DEBUG = true;
     private String serviceName;
-    private TextView hintTV;
     private Resources resources;
 
     @Override
@@ -45,38 +38,15 @@ public class MainActivity extends AppCompatActivity {
         resources = getResources();
 
         serviceName = getPackageName() + "/." + "MyAccessibilityService";
-        seekBar = findViewById(R.id.seek);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                FloatingView.getInstance().updateView(progress);
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
+        initPermissionCheckBox();
+        initSeekBar();
+        initFunction();
+        initVersionHint();
+    }
 
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        drawOverlaysSwitch = findViewById(R.id.full_screen_check);
-        drawOverlaysSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean can = Settings.canDrawOverlays(MainActivity.this);
-                drawOverlaysSwitch.setChecked(can);
-                if (!can) {
-                    openOverlaysActivity();
-                }
-            }
-        });
-        drawOverlaysSwitch.setChecked(Settings.canDrawOverlays(this));
-
-        accessibilityServiceSwitch = findViewById(R.id.service_check);
-        accessibilityServiceSwitch.setOnClickListener(new View.OnClickListener() {
+    private void initPermissionCheckBox() {
+        View.OnClickListener permissionClickLis = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean isOn = isAccessibilitySettingsOn(serviceName);
@@ -89,15 +59,34 @@ public class MainActivity extends AppCompatActivity {
                     openServiceActivity();
                 }
             }
-        });
-        accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn(serviceName));
+        };
+        drawOverlaysSwitch = findViewById(R.id.full_screen_check);
+        drawOverlaysSwitch.setOnClickListener(permissionClickLis);
+        drawOverlaysSwitch.setChecked(Settings.canDrawOverlays(this));
 
-        askPer();
-        setHint();
-        setFun();
+        accessibilityServiceSwitch = findViewById(R.id.service_check);
+        accessibilityServiceSwitch.setOnClickListener(permissionClickLis);
+        accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn(serviceName));
     }
 
-    private void setFun() {
+    private void initSeekBar() {
+        SeekBar sizeSeekBar = findViewById(R.id.size_seek);
+        sizeSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                FloatingView.getInstance().updateView(progress);
+            }
+        });
+        SeekBar alphaSeekBar = findViewById(R.id.alpha_seek);
+        alphaSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                FloatingView.getInstance().updateAlpha(progress);
+            }
+        });
+    }
+
+    private void initFunction() {
         RadioGroup doubleRG = findViewById(R.id.doubleRG);
         doubleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -128,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
         longRG.check(longCheckedId);
     }
 
-    private void setHint() {
-        hintTV = findViewById(R.id.hint);
+    private void initVersionHint() {
+        TextView hintTV = findViewById(R.id.hint);
         SpannableBuilder spannableBuilder = new SpannableBuilder();
         spannableBuilder.append("当前版本", new AbsoluteSizeSpan(DensityUtil.dip2px(13)));
         spannableBuilder.append("v" + BBCommon.versionName, new AbsoluteSizeSpan(DensityUtil.dip2px(13)),
@@ -137,34 +126,17 @@ public class MainActivity extends AppCompatActivity {
         hintTV.setText(spannableBuilder.build());
     }
 
-    private void makeCrash() {
-        String s = null;
-        s.substring(1);
-    }
-
-    public void askPer() {
-        int permissionCheck = ContextCompat.checkSelfPermission(this,
-                Manifest.permission.INTERNET);
-        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.INTERNET},
-                    MY_PERMISSIONS_INTERNET);
-        }
-
-    }
-
-
     public void openOverlaysActivity() {
         Toast.makeText(MainActivity.this, "打开浮窗权限", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + getPackageName()));
-        startActivityForResult(intent, OVERLAY_PERMISSION_REQ_CODE);
+        startActivityForResult(intent, PERMISSION_REQ_CODE_OVERLAY);
     }
 
     public void openServiceActivity() {
         Toast.makeText(MainActivity.this, "打开服务权限", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivityForResult(intent, SERVICE_PERMISSION_REQ_CODE);
+        startActivityForResult(intent, PERMISSION_REQ_CODE_SERVICE);
     }
 
     private boolean isAccessibilitySettingsOn(String accessibilityServiceName) {
@@ -186,38 +158,11 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == OVERLAY_PERMISSION_REQ_CODE) {
-            drawOverlaysSwitch.setChecked(Settings.canDrawOverlays(this));
-        } else if (requestCode == SERVICE_PERMISSION_REQ_CODE) {
-            accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn(serviceName));
-        }
+        boolean canDraw = Settings.canDrawOverlays(this);
+        drawOverlaysSwitch.setChecked(canDraw);
+        accessibilityServiceSwitch.setChecked(canDraw && isAccessibilitySettingsOn(serviceName));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_INTERNET: {
-                // If request is cancelled, the result arrays are empty.
-
-                if (grantResults.length > 0) {
-                    if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    }
-                } else {
-
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();   //
-    }
 }

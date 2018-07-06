@@ -6,53 +6,88 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/full_screen_check"
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/check_hint"
+        style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="检查窗口权限"
-        android:textSize="30dp" />
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="检查权限" />
+
+    <android.support.v7.widget.AppCompatCheckBox
+        android:id="@+id/full_screen_check"
+        style="@style/functionStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/check_hint"
+        android:layout_marginStart="@dimen/margin_top"
+        android:layout_toRightOf="@+id/check_hint"
+        android:text="窗口" />
+
 
     <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/service_check"
+        style="@style/functionStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/full_screen_check"
-        android:layout_marginTop="20dp"
-        android:text="检查服务权限"
-        android:textSize="30dp" />
+        android:layout_alignTop="@+id/full_screen_check"
+        android:layout_marginStart="@dimen/margin_top"
+        android:layout_toRightOf="@+id/full_screen_check"
+        android:text="服务" />
+
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/size"
+        android:id="@+id/size_hint"
+        style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/service_check"
-        android:layout_marginTop="20dp"
-        android:text="按钮大小"
-        android:textSize="30dp" />
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="大小" />
 
 
     <android.support.v7.widget.AppCompatSeekBar
-        android:id="@+id/seek"
+        android:id="@+id/size_seek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/service_check"
-        android:layout_alignTop="@+id/size"
-        android:layout_alignBottom="@+id/size"
+        android:layout_alignTop="@+id/size_hint"
+        android:layout_alignBottom="@+id/size_hint"
         android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/size"
+        android:layout_toRightOf="@id/size_hint"
+        android:max="100"
+        android:progress="50" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/alpha_hint"
+        style="@style/hintStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/size_hint"
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="透明度" />
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/alpha_seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/service_check"
+        android:layout_alignTop="@+id/alpha_hint"
+        android:layout_alignBottom="@+id/alpha_hint"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/alpha_hint"
         android:max="100"
         android:progress="50" />
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/double_click_fun"
+        style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/seek"
-        android:layout_marginTop="20dp"
-        android:text="双击"
-        android:textSize="30dp" />
+        android:layout_below="@+id/alpha_hint"
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="双击" />
 
     <RadioGroup
         android:id="@+id/doubleRG"
@@ -64,19 +99,24 @@
 
         <RadioButton
             android:id="@+id/doubleRG_home"
+            style="@style/functionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="返回桌面" />
 
         <RadioButton
             android:id="@+id/doubleRG_recent"
+            style="@style/functionStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:text="近期任务" />
 
         <RadioButton
             android:id="@+id/doubleRG_disable"
+            style="@style/functionStyle"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:text="无效" />
     </RadioGroup>
@@ -84,12 +124,12 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:id="@+id/long_click_fun"
+        style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/double_click_fun"
-        android:layout_marginTop="20dp"
-        android:text="长按"
-        android:textSize="30dp" />
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="长按" />
 
     <RadioGroup
         android:id="@+id/longRG"
@@ -101,18 +141,24 @@
 
         <RadioButton
             android:id="@+id/longRG_home"
+            style="@style/functionStyle"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:text="返回桌面" />
 
         <RadioButton
             android:id="@+id/longRG_recent"
+            style="@style/functionStyle"
             android:layout_width="wrap_content"
+
             android:layout_height="wrap_content"
             android:text="近期任务" />
 
         <RadioButton
             android:id="@+id/longRG_disable"
+            style="@style/functionStyle"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="无效" />
@@ -120,13 +166,12 @@
 
     <TextView
         android:id="@+id/hint"
+        style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:gravity="center"
-        android:text="食用方法：轻触返回，长按桌面。"
-        android:textSize="18dp" />
-
+        android:text="食用方法：轻触返回，长按桌面。" />
 
 </RelativeLayout>

@@ -62,19 +62,21 @@ public class FloatingView extends AppCompatImageView {
     final Intent homeIntent = new Intent(MyAccessibilityService.ACTION_HOME);
     final Intent recentsIntent = new Intent(MyAccessibilityService.ACTION_RECENTS);
 
+    public int alpha;
 
     public FloatingView(final Context context) {
         super(context);
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);//获得WindowManager对象
+        alpha = 125;
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setColor(Color.WHITE);
-        paint.setAlpha(125);
+        paint.setAlpha(alpha);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(stokeWidth);
         paint.setPathEffect(new CornerPathEffect(4));
 
         circlePaint.setColor(Color.parseColor(circleColor));
-        circlePaint.setAlpha(125);
+        circlePaint.setAlpha(alpha);
 
 
         path = new Path();
@@ -382,5 +384,13 @@ public class FloatingView extends AppCompatImageView {
             }
         }
         return null;
+    }
+
+    public void updateAlpha(int progress) {
+        int a = (int) (255 * progress / 100f);
+        alpha = Math.min(255, Math.max(0, a));
+        paint.setAlpha(alpha);
+        circlePaint.setAlpha(alpha);
+        invalidate();
     }
 }
