@@ -14,8 +14,10 @@ public class BBCommon {
     public static final String SHARED_PREFERENCES_LONG = SHARED_PREFERENCES_PREFIX + "long";
     public static final String SHARED_PREFERENCES_ALPHA = SHARED_PREFERENCES_PREFIX + "alpha";
     public static final String SHARED_PREFERENCES_SIZE = SHARED_PREFERENCES_PREFIX + "size";
-    public static final String SHARED_PREFERENCES_X = SHARED_PREFERENCES_PREFIX + "x";
-    public static final String SHARED_PREFERENCES_Y = SHARED_PREFERENCES_PREFIX + "y";
+    public static final String SHARED_PREFERENCES_X_PORTRAIT = SHARED_PREFERENCES_PREFIX + "x_portrait";
+    public static final String SHARED_PREFERENCES_Y_PORTRAIT = SHARED_PREFERENCES_PREFIX + "y_portrait";
+    public static final String SHARED_PREFERENCES_X_LANDSCAPE = SHARED_PREFERENCES_PREFIX + "x_landscape";
+    public static final String SHARED_PREFERENCES_Y_LANDSCAPE = SHARED_PREFERENCES_PREFIX + "y_landscape";
 
 
     public static final boolean DEBUG = false;

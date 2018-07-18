@@ -11,6 +11,10 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -26,19 +30,107 @@ public class MainActivity extends AppCompatActivity {
     private AppCompatCheckBox drawOverlaysSwitch;
     private AppCompatCheckBox accessibilityServiceSwitch;
     private Resources resources;
+    private boolean hasPermission;
+    private TextView sizeSeekBarHint;
+    private SeekBar sizeSeekBar;
+    private TextView alphaSeekBarHint;
+    private SeekBar alphaSeekBar;
+    private TextView doubleFunHint;
+    private RadioGroup doubleRG;
+    private TextView longFunHint;
+    private RadioGroup longRG;
+    private HashMap<View, Float> viewHM = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         resources = getResources();
-        initPermissionCheckBox();
+        hasPermission = initPermissionCheckBox();
+        sizeSeekBarHint = findViewById(R.id.size_hint);
+        sizeSeekBar = findViewById(R.id.size_seek);
+        alphaSeekBarHint = findViewById(R.id.alpha_hint);
+        alphaSeekBar = findViewById(R.id.alpha_seek);
+        doubleFunHint = findViewById(R.id.double_click_fun);
+        doubleRG = findViewById(R.id.doubleRG);
+        longFunHint = findViewById(R.id.long_click_fun);
+        longRG = findViewById(R.id.longRG);
+        float s = 1;
+        float a = 0.2f;
+        viewHM.put(sizeSeekBarHint, s);
+        viewHM.put(sizeSeekBar, s);
+        viewHM.put(alphaSeekBarHint, s + a * 1);
+        viewHM.put(alphaSeekBar, s + a * 1);
+        viewHM.put(doubleFunHint, s + a * 2);
+        viewHM.put(doubleRG, s + a * 2);
+        viewHM.put(longFunHint, s + a * 3);
+        viewHM.put(longRG, s + a * 3);
         initSeekBar();
         initFunction();
         initVersionHint();
+        sizeSeekBarHint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setFunctionViewVisibility(sizeSeekBar.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
+            }
+        });
     }
 
-    private void initPermissionCheckBox() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        for (final View view : viewHM.keySet()) {
+            view.setVisibility(View.INVISIBLE);
+        }
+        if (hasPermission) {
+            setFunctionViewVisibility(View.VISIBLE);
+        }
+    }
+
+    public void setFunctionViewVisibility(final int visibility) {
+        int startAlpha = visibility == View.VISIBLE ? 0 : 1;
+        int endAlpha = visibility == View.VISIBLE ? 1 : 0;
+        Interpolator interpolator = new LinearInterpolator();
+        int d = 300;
+        for (final View view : viewHM.keySet()) {
+            final AlphaAnimation alphaAnimation = new AlphaAnimation(startAlpha, endAlpha);
+            alphaAnimation.setFillAfter(true);
+            alphaAnimation.setDuration(d);
+            alphaAnimation.setAnimationListener(new SimpleAnimationListener() {
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    view.setVisibility(visibility);
+                }
+            });
+            alphaAnimation.setInterpolator(interpolator);
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    view.startAnimation(alphaAnimation);
+                }
+            }, (long) (viewHM.get(view) * d));
+        }
+    }
+
+    private class SimpleAnimationListener implements Animation.AnimationListener {
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+
+        }
+    }
+
+    private boolean initPermissionCheckBox() {
         View.OnClickListener permissionClickLis = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
         accessibilityServiceSwitch = findViewById(R.id.service_check);
         accessibilityServiceSwitch.setOnClickListener(permissionClickLis);
         accessibilityServiceSwitch.setChecked(Utils.isAccessibilitySettingsOn(this, BBCommon.serviceName));
+        return drawOverlaysSwitch.isChecked() && accessibilityServiceSwitch.isChecked();
     }
 
     private void initSeekBar() {
-        final SeekBar sizeSeekBar = findViewById(R.id.size_seek);
         sizeSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -82,8 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 / SizeDS.DEFAULT_MAX_WIDTH
         );
 
-
-        final SeekBar alphaSeekBar = findViewById(R.id.alpha_seek);
         alphaSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -119,7 +209,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initFunction() {
-        RadioGroup doubleRG = findViewById(R.id.doubleRG);
         doubleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -129,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
         String doubleIntent = BBView.getInstance().doubleClickDS.getFromDisk();
         doubleRG.check(findKey(DOUBLE_HASH_MAP, doubleIntent));
 
-        RadioGroup longRG = findViewById(R.id.longRG);
         longRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -176,8 +264,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         boolean canDraw = Settings.canDrawOverlays(this);
         drawOverlaysSwitch.setChecked(canDraw);
-        accessibilityServiceSwitch.setChecked(canDraw && Utils.isAccessibilitySettingsOn(this,
-                BBCommon.serviceName));
+        hasPermission = canDraw && Utils.isAccessibilitySettingsOn(this,
+                BBCommon.serviceName);
+        accessibilityServiceSwitch.setChecked(hasPermission);
     }
 
 }

@@ -49,8 +49,8 @@ public class BBView extends AppCompatImageView {
     public BaseDataController longClickDS;
     public AlphaDS alphaDS;
     public SizeDS sizeDS;
-    public XYBaseDS xDS;
-    public XYBaseDS yDS;
+    public XYDS xds;
+    public XYDS yds;
 
     public BBView(final Context context) {
         super(context);
@@ -59,8 +59,16 @@ public class BBView extends AppCompatImageView {
         alphaDS = new AlphaDS();
         doubleClickDS = new BaseDataController(BBCommon.SHARED_PREFERENCES_DOUBLE);
         longClickDS = new BaseDataController(BBCommon.SHARED_PREFERENCES_LONG);
-        xDS = new XYBaseDS(BBCommon.SHARED_PREFERENCES_X);
-        yDS = new XYBaseDS(BBCommon.SHARED_PREFERENCES_Y);
+        Configuration configuration = getResources().getConfiguration(); //获取设置的配置信息
+        boolean orientationPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT;
+
+        xds = new XYDS(BBCommon.SHARED_PREFERENCES_X_PORTRAIT,
+                BBCommon.SHARED_PREFERENCES_X_LANDSCAPE);
+        xds.set(orientationPortrait);
+        yds = new XYDS(BBCommon.SHARED_PREFERENCES_Y_PORTRAIT,
+                BBCommon.SHARED_PREFERENCES_Y_LANDSCAPE);
+        yds.set(orientationPortrait);
+
 
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
@@ -73,8 +81,7 @@ public class BBView extends AppCompatImageView {
         paint.setPathEffect(new CornerPathEffect(4));
         circlePaint.setColor(0xFFB0C4DE);
         circlePaint.setAlpha(alphaDS.alpha);
-        Configuration configuration = getResources().getConfiguration(); //获取设置的配置信息
-        orientationPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT;
+
     }
 
     private WindowManager windowManager;
@@ -88,8 +95,10 @@ public class BBView extends AppCompatImageView {
         isViewShow = true;
         mParams = new WindowManager.LayoutParams();
         mParams.gravity = Gravity.TOP | Gravity.START;
-        mParams.x = xDS.getFromDisk();
-        mParams.y = yDS.getFromDisk();
+
+        mParams.x = xds.getValue();
+        mParams.y = yds.getValue();
+
         //总是出现在应用程序窗口之上
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             mParams.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
@@ -148,26 +157,20 @@ public class BBView extends AppCompatImageView {
     float rawX;
     float rawY;
 
-    private boolean orientationPortrait;
-
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
         //横屏
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            orientationPortrait = false;
-            if (mParams.x > BBCommon.screenWidth / 2) {
-                mParams.x = (int) BBCommon.screenHeight;
-            } else {
-                mParams.x = 0;
-            }
-            if (BBCommon.screenHeight != 0) {
-                mParams.y = (int) (mParams.y / BBCommon.screenHeight * BBCommon.screenWidth);
-            }
+            xds.set(false);
+            yds.set(false);
+            mParams.x = xds.getValue();
+            mParams.y = yds.getValue();
         } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            orientationPortrait = true;
-            mParams.x = xDS.getFromDisk();
-            mParams.y = yDS.getFromDisk();
+            xds.set(true);
+            yds.set(true);
+            mParams.x = xds.getValue();
+            mParams.y = yds.getValue();
         }
 
         windowManager.updateViewLayout(BBView.this, mParams);
@@ -207,15 +210,11 @@ public class BBView extends AppCompatImageView {
                 oldY = event.getRawY();
 
                 //纵向
-                if (orientationPortrait) {
+                if (xds.getFromMemory()) {
                     if (oldX > BBCommon.screenWidth / 2) {
                         mParams.x = (int) (BBCommon.screenWidth - getWidth());
                     } else {
                         mParams.x = 0;
-                    }
-                    if (moved) {
-                        xDS.set(mParams.x);
-                        yDS.set(mParams.y);
                     }
                 } else {
                     if (oldX > BBCommon.screenHeight / 2) {
@@ -223,6 +222,10 @@ public class BBView extends AppCompatImageView {
                     } else {
                         mParams.x = 0;
                     }
+                }
+                if (moved) {
+                    xds.setValue(mParams.x);
+                    yds.setValue(mParams.y);
                 }
                 windowManager.updateViewLayout(BBView.this, mParams);
                 break;
