@@ -1,9 +1,41 @@
 package com.example.liubao.backbutton;
 
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.util.DisplayMetrics;
+import android.view.Display;
+import android.view.WindowManager;
+
 /**
  * * Created by liubao on 2018/6/8.
  */
 public class BBCommon {
+    static {
+        PackageInfo packageInfo = Utils.getPackageInfo(MainApplication.context);
+        if (packageInfo != null) {
+            BBCommon.versionName = packageInfo.versionName;
+            BBCommon.versionCode = packageInfo.versionCode;
+        }
+        BBCommon.serviceName = MainApplication.context.getPackageName() + "/." + "MyAccessibilityService";
+        WindowManager wm = (WindowManager) MainApplication.context.getSystemService(Context.WINDOW_SERVICE);
+        if (wm != null && wm.getDefaultDisplay() != null) {
+            Display display = wm.getDefaultDisplay();
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            display.getMetrics(displayMetrics);
+            BBCommon.screenWidth = displayMetrics.widthPixels;
+            BBCommon.screenHeight = displayMetrics.heightPixels;
+        }
+    }
+
+    public static final boolean DEBUG = false;
+    public static String serviceName;
+    public static float screenWidth;
+    public static float screenHeight;
+    public static String versionName;
+    public static int versionCode;
+    public static final int DEFAULT_X = 0;
+    public static final int DEFAULT_Y = (int) (screenHeight / 2);
+
     public static final String ACTION_BACK = "b";
     public static final String ACTION_HOME = "h";
     public static final String ACTION_RECENT = "r";
@@ -20,10 +52,4 @@ public class BBCommon {
     public static final String SHARED_PREFERENCES_Y_LANDSCAPE = SHARED_PREFERENCES_PREFIX + "y_landscape";
 
 
-    public static final boolean DEBUG = false;
-    public static String serviceName;
-    public static float screenWidth;
-    public static float screenHeight;
-    public static String versionName;
-    public static int versionCode;
 }

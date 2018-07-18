@@ -8,9 +8,9 @@ public class XYDS implements IDataController<Boolean> {
     public XYBaseDS portraitDS;
     public XYBaseDS landscapeDS;
 
-    public XYDS(String sharedPreferencesPortrait, String sharedPreferencesLandscape) {
-        portraitDS = new XYBaseDS(sharedPreferencesPortrait);
-        landscapeDS = new XYBaseDS(sharedPreferencesLandscape);
+    public XYDS(String sharedPreferencesPortrait, String sharedPreferencesLandscape, int d) {
+        portraitDS = new XYBaseDS(sharedPreferencesPortrait, d);
+        landscapeDS = new XYBaseDS(sharedPreferencesLandscape, d);
     }
 
     @Override

@@ -63,10 +63,10 @@ public class BBView extends AppCompatImageView {
         boolean orientationPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT;
 
         xds = new XYDS(BBCommon.SHARED_PREFERENCES_X_PORTRAIT,
-                BBCommon.SHARED_PREFERENCES_X_LANDSCAPE);
+                BBCommon.SHARED_PREFERENCES_X_LANDSCAPE, BBCommon.DEFAULT_X);
         xds.set(orientationPortrait);
         yds = new XYDS(BBCommon.SHARED_PREFERENCES_Y_PORTRAIT,
-                BBCommon.SHARED_PREFERENCES_Y_LANDSCAPE);
+                BBCommon.SHARED_PREFERENCES_Y_LANDSCAPE, BBCommon.DEFAULT_Y);
         yds.set(orientationPortrait);
 
 

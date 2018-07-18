@@ -4,13 +4,14 @@ package com.example.liubao.backbutton;
  * * Created by liubao on 2018/7/18.
  */
 public class XYBaseDS implements IDataController<Integer> {
-
     private final String fileKey;
     public Integer value;
+    private int defaultValue;
 
 
-    public XYBaseDS(String fileKey) {
+    public XYBaseDS(String fileKey, int defaultValue) {
         this.fileKey = fileKey;
+        this.defaultValue = defaultValue;
         value = getFromDisk();
     }
 
@@ -21,7 +22,7 @@ public class XYBaseDS implements IDataController<Integer> {
 
     @Override
     public Integer getFromDisk() {
-        Integer key = SharedPreferencesUtils.getInt(fileKey, 0);
+        Integer key = SharedPreferencesUtils.getInt(fileKey, defaultValue);
         return key;
     }
 

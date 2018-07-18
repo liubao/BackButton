@@ -74,11 +74,6 @@ public class MainActivity extends AppCompatActivity {
                 setFunctionViewVisibility(sizeSeekBar.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
         for (final View view : viewHM.keySet()) {
             view.setVisibility(View.INVISIBLE);
         }
@@ -86,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             setFunctionViewVisibility(View.VISIBLE);
         }
     }
+
 
     public void setFunctionViewVisibility(final int visibility) {
         int startAlpha = visibility == View.VISIBLE ? 0 : 1;
@@ -267,6 +263,9 @@ public class MainActivity extends AppCompatActivity {
         hasPermission = canDraw && Utils.isAccessibilitySettingsOn(this,
                 BBCommon.serviceName);
         accessibilityServiceSwitch.setChecked(hasPermission);
+        if (hasPermission) {
+            setFunctionViewVisibility(View.VISIBLE);
+        }
     }
 
 }
