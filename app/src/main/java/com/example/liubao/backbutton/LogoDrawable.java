@@ -1,6 +1,5 @@
 package com.example.liubao.backbutton;
 
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
@@ -41,9 +40,6 @@ public class LogoDrawable extends Drawable {
 
         circlePaint.setColor(Color.parseColor(circleColor));
         circlePaint.setAlpha(125);
-
-        final Intent backIntent = new Intent(MyAccessibilityService.ACTION_BACK);
-        final Intent homeIntent = new Intent(MyAccessibilityService.ACTION_HOME);
 
         path = new Path();
         radius = width / 2f - stokeWidth;

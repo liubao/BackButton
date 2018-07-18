@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.example.liubao.backbutton"
         minSdkVersion 24
-        targetSdkVersion 28
-        versionCode 24
-        versionName "2.4"
+        targetSdkVersion 27
+        versionCode 30
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构

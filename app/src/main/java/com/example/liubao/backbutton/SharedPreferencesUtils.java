@@ -12,9 +12,22 @@ public class SharedPreferencesUtils {
         getEditor(PREF_FILE).putInt(key, value).apply();
     }
 
+    public static void putFloat(String key, float value) {
+        getEditor(PREF_FILE).putFloat(key, value).apply();
+    }
+
     public static int getInt(String key, int defValue) {
         try {
             return getSharedPreferences(PREF_FILE).getInt(key, defValue);
+        } catch (ClassCastException e) {
+            return defValue;
+        }
+    }
+
+
+    public static float getFloat(String key, float defValue) {
+        try {
+            return getSharedPreferences(PREF_FILE).getFloat(key, defValue);
         } catch (ClassCastException e) {
             return defValue;
         }
@@ -24,8 +37,8 @@ public class SharedPreferencesUtils {
         getEditor(PREF_FILE).putString(key, value).apply();
     }
 
-    public static void getString(String key, String defValue) {
-        getSharedPreferences(PREF_FILE).getString(key, defValue);
+    public static String getString(String key, String defValue) {
+        return getSharedPreferences(PREF_FILE).getString(key, defValue);
     }
 
     public static void putString(String name, String key, String value) {

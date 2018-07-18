@@ -23,13 +23,15 @@ public class MainApplication extends Application {
         initBugly();
         initVersion();
         initScreenInfo();
+        BBCommon.serviceName = getPackageName() + "/." + "MyAccessibilityService";
     }
+
 
     private void initVersion() {
         PackageInfo packageInfo = Utils.getPackageInfo(context);
         if (packageInfo != null) {
             BBCommon.versionName = packageInfo.versionName;
-            BBCommon.versioncode = packageInfo.versionCode;
+            BBCommon.versionCode = packageInfo.versionCode;
         }
     }
 

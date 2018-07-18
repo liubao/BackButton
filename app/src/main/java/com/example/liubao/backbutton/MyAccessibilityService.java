@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
@@ -15,9 +16,6 @@ import android.widget.Toast;
  */
 public class MyAccessibilityService extends AccessibilityService {
     private final static String TAG = MyAccessibilityService.class.getSimpleName();
-    public final static String ACTION_BACK = MainActivity.APP_PACKAGE_NAME + "back";
-    public final static String ACTION_HOME = MainActivity.APP_PACKAGE_NAME + "home";
-    public final static String ACTION_RECENTS = MainActivity.APP_PACKAGE_NAME + "recents";
 
     private MyBroadcastReceiver myBroadcastReceiver;
     private LocalBroadcastManager localBroadcastManager;
@@ -26,13 +24,12 @@ public class MyAccessibilityService extends AccessibilityService {
     public void onCreate() {
         super.onCreate();
         IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ACTION_BACK);
-        intentFilter.addAction(ACTION_HOME);
-        intentFilter.addAction(ACTION_RECENTS);
+        intentFilter.addAction(BBCommon.ACTION_BACK);
+        intentFilter.addAction(BBCommon.ACTION_HOME);
+        intentFilter.addAction(BBCommon.ACTION_RECENT);
         myBroadcastReceiver = new MyBroadcastReceiver();
         localBroadcastManager = LocalBroadcastManager.getInstance(this);
         localBroadcastManager.registerReceiver(myBroadcastReceiver, intentFilter);
-        Toast.makeText(this, "服务已开启", Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -42,7 +39,11 @@ public class MyAccessibilityService extends AccessibilityService {
 
     @Override
     protected void onServiceConnected() {
-        FloatingView.getInstance().show();
+        if (Utils.isAccessibilitySettingsOn(this, BBCommon.serviceName) &&
+                Settings.canDrawOverlays(this)) {
+            BBView.getInstance().show();
+            Toast.makeText(this, "BackButton正常运行中", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -65,17 +66,17 @@ public class MyAccessibilityService extends AccessibilityService {
                 }
                 boolean success = false;
                 switch (action) {
-                    case ACTION_BACK:
+                    case BBCommon.ACTION_BACK:
                         success = performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
                         break;
-                    case ACTION_HOME:
+                    case BBCommon.ACTION_HOME:
                         success = performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME);
                         break;
-                    case ACTION_RECENTS:
+                    case BBCommon.ACTION_RECENT:
                         success = performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
                         break;
                 }
-                if (MainActivity.DEBUG) {
+                if (BBCommon.DEBUG) {
                     Log.d(TAG, success + " is success");
                 }
             }
