@@ -42,7 +42,6 @@ public class SizeDS implements IDataController<Integer> {
         width = w == null ? DEFAULT_MAX_WIDTH : w;
         height = width;
         compute();
-        putToDisk();
     }
 
     @Override

@@ -26,7 +26,6 @@ public class XYBaseDS implements IDataController<Integer> {
         return key;
     }
 
-
     @Override
     public void putToDisk() {
         SharedPreferencesUtils.putInt(fileKey, value);
@@ -35,7 +34,6 @@ public class XYBaseDS implements IDataController<Integer> {
     @Override
     public void set(Integer newValue) {
         value = newValue;
-        putToDisk();
     }
 
 }

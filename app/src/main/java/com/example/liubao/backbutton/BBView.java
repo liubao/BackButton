@@ -45,8 +45,8 @@ public class BBView extends AppCompatImageView {
 
     final Intent backIntent = new Intent(BBCommon.ACTION_BACK);
 
-    public BaseDataController doubleClickDS;
-    public BaseDataController longClickDS;
+    public BaseClickDataController doubleClickDS;
+    public BaseClickDataController longClickDS;
     public AlphaDS alphaDS;
     public SizeDS sizeDS;
     public XYDS xds;
@@ -57,8 +57,8 @@ public class BBView extends AppCompatImageView {
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);//获得WindowManager对象
         sizeDS = new SizeDS();
         alphaDS = new AlphaDS();
-        doubleClickDS = new BaseDataController(BBCommon.SHARED_PREFERENCES_DOUBLE);
-        longClickDS = new BaseDataController(BBCommon.SHARED_PREFERENCES_LONG);
+        doubleClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_DOUBLE);
+        longClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_LONG);
         Configuration configuration = getResources().getConfiguration(); //获取设置的配置信息
         boolean orientationPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT;
 
@@ -121,7 +121,7 @@ public class BBView extends AppCompatImageView {
             @Override
             public boolean onSingleTapConfirmed(MotionEvent e) {//单击事件
                 //在双击存在的情况下，这里响应单击。
-                if (doubleClickDS.intent != null) {
+                if (doubleClickDS.action != null) {
                     dispatchClick(backIntent);
                 }
                 return super.onSingleTapConfirmed(e);
@@ -130,7 +130,7 @@ public class BBView extends AppCompatImageView {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 //在双击不存在的情况下，这里响应单击。
-                if (doubleClickDS.intent == null) {
+                if (doubleClickDS.action == null) {
                     dispatchClick(backIntent);
                 }
                 return super.onSingleTapUp(e);
@@ -138,7 +138,11 @@ public class BBView extends AppCompatImageView {
 
             @Override
             public boolean onDoubleTap(MotionEvent e) {//双击事件
-                dispatchClick(doubleClickDS.intent);
+                if (doubleClickDS.action == null) {
+                    dispatchClick(backIntent);
+                } else {
+                    dispatchClick(doubleClickDS.intent);
+                }
                 return super.onDoubleTap(e);  //此处做双击具体业务逻辑
             }
 
@@ -281,5 +285,4 @@ public class BBView extends AppCompatImageView {
         circlePaint.setAlpha(alphaDS.alpha);
         invalidate();
     }
-
 }

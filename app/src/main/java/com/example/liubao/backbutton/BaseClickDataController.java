@@ -5,14 +5,14 @@ import android.content.Intent;
 /**
  * * Created by liubao on 2018/7/13.
  */
-public class BaseDataController implements IDataController<String> {
+public class BaseClickDataController implements IDataController<String> {
 
     public String action;
 
     public Intent intent;
     public String fileKey;
 
-    public BaseDataController(String fileKey) {
+    public BaseClickDataController(String fileKey) {
         intent = new Intent();
         this.fileKey = fileKey;
         action = getFromDisk();
@@ -40,7 +40,6 @@ public class BaseDataController implements IDataController<String> {
     public void set(String newValue) {
         action = newValue;
         intent.setAction(action);
-        putToDisk();
     }
 
 }

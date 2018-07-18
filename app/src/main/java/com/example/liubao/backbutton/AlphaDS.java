@@ -33,7 +33,6 @@ public class AlphaDS implements IDataController<Integer> {
     public void set(Integer p) {
         int a = p == null ? 125 : p;
         alpha = Math.min(255, Math.max(0, a));
-        putToDisk();
     }
 
     @Override

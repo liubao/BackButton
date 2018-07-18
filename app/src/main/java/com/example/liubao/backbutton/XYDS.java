@@ -30,7 +30,8 @@ public class XYDS implements IDataController<Boolean> {
 
     @Override
     public void putToDisk() {
-
+        portraitDS.putToDisk();
+        landscapeDS.putToDisk();
     }
 
     public void setValue(int v) {
@@ -44,6 +45,5 @@ public class XYDS implements IDataController<Boolean> {
     public int getValue() {
         return orientationPortrait ? portraitDS.value : landscapeDS.value;
     }
-
 
 }

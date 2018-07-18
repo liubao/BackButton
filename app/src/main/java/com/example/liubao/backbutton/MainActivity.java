@@ -68,12 +68,6 @@ public class MainActivity extends AppCompatActivity {
         initSeekBar();
         initFunction();
         initVersionHint();
-        sizeSeekBarHint.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setFunctionViewVisibility(sizeSeekBar.getVisibility() == View.VISIBLE ? View.INVISIBLE : View.VISIBLE);
-            }
-        });
         for (final View view : viewHM.keySet()) {
             view.setVisibility(View.INVISIBLE);
         }
@@ -152,6 +146,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSeekBar() {
+        sizeSeekBar.setProgress(BBView.getInstance().sizeDS.getFromDisk() * sizeSeekBar.getMax()
+                / SizeDS.DEFAULT_MAX_WIDTH
+        );
         sizeSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -160,16 +157,9 @@ public class MainActivity extends AppCompatActivity {
                     BBView.getInstance().updateView(w);
                 }
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                BBView.getInstance().sizeDS.putToDisk();
-            }
         });
-        sizeSeekBar.setProgress(BBView.getInstance().sizeDS.getFromDisk() * sizeSeekBar.getMax()
-                / SizeDS.DEFAULT_MAX_WIDTH
-        );
-
+        alphaSeekBar.setProgress(BBView.getInstance().alphaDS.getFromDisk()
+                * alphaSeekBar.getMax() / AlphaDS.MAX_ALPHA);
         alphaSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -178,14 +168,7 @@ public class MainActivity extends AppCompatActivity {
                             / alphaSeekBar.getMax());
                 }
             }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                BBView.getInstance().alphaDS.putToDisk();
-            }
         });
-        alphaSeekBar.setProgress(BBView.getInstance().alphaDS.getFromDisk()
-                * alphaSeekBar.getMax() / AlphaDS.MAX_ALPHA);
     }
 
     public static final HashMap<Integer, String> DOUBLE_HASH_MAP = new HashMap<Integer, String>() {
@@ -203,25 +186,40 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        BBView.getInstance().doubleClickDS.putToDisk();
+        BBView.getInstance().longClickDS.putToDisk();
+        BBView.getInstance().alphaDS.putToDisk();
+        BBView.getInstance().sizeDS.putToDisk();
+        BBView.getInstance().xds.putToDisk();
+        BBView.getInstance().yds.putToDisk();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     private void initFunction() {
+        String doubleIntent = BBView.getInstance().doubleClickDS.getFromDisk();
+        doubleRG.check(findKey(DOUBLE_HASH_MAP, doubleIntent));
         doubleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 BBView.getInstance().doubleClickDS.set(DOUBLE_HASH_MAP.get(checkedId));
             }
         });
-        String doubleIntent = BBView.getInstance().doubleClickDS.getFromDisk();
-        doubleRG.check(findKey(DOUBLE_HASH_MAP, doubleIntent));
 
+        String longIntent = BBView.getInstance().longClickDS.getFromDisk();
+        longRG.check(findKey(LONG_HASH_MAP, longIntent));
         longRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 BBView.getInstance().longClickDS.set(LONG_HASH_MAP.get(checkedId));
             }
         });
-        String longIntent = BBView.getInstance().longClickDS.getFromDisk();
-        longRG.check(findKey(LONG_HASH_MAP, longIntent));
     }
 
     private void initVersionHint() {
