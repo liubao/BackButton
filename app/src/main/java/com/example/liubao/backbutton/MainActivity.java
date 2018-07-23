@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private RadioGroup doubleRG;
     private TextView longFunHint;
     private RadioGroup longRG;
+    private RadioGroup styleRG;
+    private TextView styleHint;
     private HashMap<View, Float> viewHM = new HashMap<>();
 
     @Override
@@ -51,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         sizeSeekBar = findViewById(R.id.size_seek);
         alphaSeekBarHint = findViewById(R.id.alpha_hint);
         alphaSeekBar = findViewById(R.id.alpha_seek);
-        doubleFunHint = findViewById(R.id.double_click_fun);
+        doubleFunHint = findViewById(R.id.doubleHint);
         doubleRG = findViewById(R.id.doubleRG);
-        longFunHint = findViewById(R.id.long_click_fun);
+        longFunHint = findViewById(R.id.longHint);
         longRG = findViewById(R.id.longRG);
+        styleRG = findViewById(R.id.styleRG);
+        styleHint = findViewById(R.id.styleHint);
         float s = 1;
         float a = 0.2f;
         viewHM.put(sizeSeekBarHint, s);
@@ -65,15 +69,28 @@ public class MainActivity extends AppCompatActivity {
         viewHM.put(doubleRG, s + a * 2);
         viewHM.put(longFunHint, s + a * 3);
         viewHM.put(longRG, s + a * 3);
+        viewHM.put(styleHint, s + a * 4);
+        viewHM.put(styleRG, s + a * 4);
         initSeekBar();
         initFunction();
         initVersionHint();
+        initHideMode();
         for (final View view : viewHM.keySet()) {
             view.setVisibility(View.INVISIBLE);
         }
         if (hasPermission) {
             setFunctionViewVisibility(View.VISIBLE);
         }
+    }
+
+    private void initHideMode() {
+        styleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                BBView.getInstance().setPainter(checkedId == R.id.lineStyle ? new LinePainter() : new StarPainter());
+            }
+        });
+        styleRG.check(BBView.getInstance().painter instanceof LinePainter ? R.id.lineStyle : R.id.roundStyle);
     }
 
 
@@ -99,24 +116,6 @@ public class MainActivity extends AppCompatActivity {
                     view.startAnimation(alphaAnimation);
                 }
             }, (long) (viewHM.get(view) * d));
-        }
-    }
-
-    private class SimpleAnimationListener implements Animation.AnimationListener {
-
-        @Override
-        public void onAnimationStart(Animation animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-
         }
     }
 
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initSeekBar() {
-        sizeSeekBar.setProgress(BBView.getInstance().sizeDS.getFromDisk() * sizeSeekBar.getMax()
+        sizeSeekBar.setProgress(BBView.getInstance().getSizeDS().getFromDisk() * sizeSeekBar.getMax()
                 / SizeDS.DEFAULT_MAX_WIDTH
         );
         sizeSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
@@ -154,11 +153,11 @@ public class MainActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
                     int w = progress * SizeDS.DEFAULT_MAX_WIDTH / sizeSeekBar.getMax();
-                    BBView.getInstance().updateView(w);
+                    BBView.getInstance().updateView(w, w);
                 }
             }
         });
-        alphaSeekBar.setProgress(BBView.getInstance().alphaDS.getFromDisk()
+        alphaSeekBar.setProgress(BBView.getInstance().getAlphaDS().getFromDisk()
                 * alphaSeekBar.getMax() / AlphaDS.MAX_ALPHA);
         alphaSeekBar.setOnSeekBarChangeListener(new SimpleOnSeekBarChangeListener() {
             @Override
@@ -191,8 +190,8 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
         BBView.getInstance().doubleClickDS.putToDisk();
         BBView.getInstance().longClickDS.putToDisk();
-        BBView.getInstance().alphaDS.putToDisk();
-        BBView.getInstance().sizeDS.putToDisk();
+        BBView.getInstance().getAlphaDS().putToDisk();
+        BBView.getInstance().getSizeDS().putToDisk();
         BBView.getInstance().xds.putToDisk();
         BBView.getInstance().yds.putToDisk();
     }

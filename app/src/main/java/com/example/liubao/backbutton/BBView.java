@@ -4,9 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.CornerPathEffect;
-import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.support.v4.content.LocalBroadcastManager;
@@ -24,9 +21,6 @@ import android.view.WindowManager;
 public class BBView extends AppCompatImageView {
 
     public static BBView instance;
-
-    private Paint circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private Paint paint;
     private GestureDetector gestureDetector;
 
 
@@ -47,16 +41,14 @@ public class BBView extends AppCompatImageView {
 
     public BaseClickDataController doubleClickDS;
     public BaseClickDataController longClickDS;
-    public AlphaDS alphaDS;
-    public SizeDS sizeDS;
+    Painter painter;
     public XYDS xds;
     public XYDS yds;
 
     public BBView(final Context context) {
         super(context);
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);//获得WindowManager对象
-        sizeDS = new SizeDS();
-        alphaDS = new AlphaDS();
+        painter = new StarPainter();
         doubleClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_DOUBLE);
         longClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_LONG);
         Configuration configuration = getResources().getConfiguration(); //获取设置的配置信息
@@ -73,14 +65,6 @@ public class BBView extends AppCompatImageView {
         localBroadcastManager = LocalBroadcastManager.getInstance(context);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setColor(Color.WHITE);
-        paint.setAlpha(alphaDS.alpha);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(sizeDS.stokeWidth);
-        paint.setPathEffect(new CornerPathEffect(4));
-        circlePaint.setColor(0xFFB0C4DE);
-        circlePaint.setAlpha(alphaDS.alpha);
 
     }
 
@@ -108,12 +92,10 @@ public class BBView extends AppCompatImageView {
         //设置图片格式，效果为背景透明
         mParams.format = PixelFormat.RGBA_8888;
         mParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        mParams.width = sizeDS.width;
-        mParams.height = sizeDS.height;
         windowManager.addView(BBView.this, mParams);
-
         //样式
 
+        updateView(painter.getWidth(), painter.getHeight());
 
         //交互
         gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
@@ -242,24 +224,27 @@ public class BBView extends AppCompatImageView {
         super.onLayout(changed, left, top, right, bottom);
         int w = getWidth();
         int h = getHeight();
-        sizeDS.onLayout(w, h);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        painter.onSizeChanged(w, h);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawCircle(sizeDS.width / 2f, sizeDS.height / 2f,
-                sizeDS.width / 2f, circlePaint);
-        canvas.drawPath(sizeDS.path, paint);
+        painter.onDraw(canvas);
     }
 
-    public void updateView(int w) {
+    public void updateView(int w, int h) {
         if (mParams == null) {
             return;
         }
-        sizeDS.set(w);
-        mParams.width = sizeDS.width;
-        mParams.height = sizeDS.height;
+        painter.onSizeChanged(w, h);
+        mParams.width = painter.getWidth();
+        mParams.height = painter.getHeight();
         windowManager.updateViewLayout(BBView.this, mParams);
     }
 
@@ -280,9 +265,23 @@ public class BBView extends AppCompatImageView {
     }
 
     public void updateAlpha(int a) {
-        alphaDS.set(a);
-        paint.setAlpha(alphaDS.alpha);
-        circlePaint.setAlpha(alphaDS.alpha);
+        painter.setAlpha(a);
+        invalidate();
+    }
+
+    public IDataController<Integer> getSizeDS() {
+        return painter.getSizeDS();
+    }
+
+    public IDataController<Integer> getAlphaDS() {
+        return painter.getAlphaDS();
+    }
+
+    public void setPainter(Painter painter) {
+        this.painter = painter;
+        int w = getWidth() == 0 ? painter.getWidth() : getWidth();
+        int h = getHeight() == 0 ? painter.getHeight() : getHeight();
+        updateView(w, h);
         invalidate();
     }
 }

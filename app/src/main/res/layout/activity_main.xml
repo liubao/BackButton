@@ -81,7 +81,7 @@
         android:progress="50" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/double_click_fun"
+        android:id="@+id/doubleHint"
         style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,8 +93,8 @@
         android:id="@+id/doubleRG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/double_click_fun"
-        android:layout_toRightOf="@+id/double_click_fun"
+        android:layout_alignBottom="@+id/doubleHint"
+        android:layout_toRightOf="@+id/doubleHint"
         android:orientation="horizontal">
 
         <RadioButton
@@ -123,11 +123,11 @@
 
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/long_click_fun"
+        android:id="@+id/longHint"
         style="@style/hintStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/double_click_fun"
+        android:layout_below="@+id/doubleHint"
         android:layout_marginTop="@dimen/margin_top"
         android:text="长按" />
 
@@ -135,15 +135,14 @@
         android:id="@+id/longRG"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/long_click_fun"
-        android:layout_toRightOf="@+id/long_click_fun"
+        android:layout_alignBottom="@+id/longHint"
+        android:layout_toRightOf="@+id/longHint"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/longRG_home"
             style="@style/functionStyle"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:text="返回桌面" />
 
@@ -157,11 +156,44 @@
         <RadioButton
             android:id="@+id/longRG_disable"
             style="@style/functionStyle"
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="无效" />
     </RadioGroup>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/styleHint"
+        style="@style/hintStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/longHint"
+        android:layout_marginTop="@dimen/margin_top"
+        android:text="样式" />
+
+    <RadioGroup
+        android:id="@+id/styleRG"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/styleHint"
+        android:layout_toRightOf="@+id/styleHint"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/lineStyle"
+            style="@style/functionStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="长条样式" />
+
+        <RadioButton
+            android:id="@+id/roundStyle"
+            style="@style/functionStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="圆形样式" />
+
+    </RadioGroup>
+
 
     <TextView
         android:id="@+id/hint"
@@ -172,5 +204,6 @@
         android:layout_centerHorizontal="true"
         android:gravity="center"
         android:text="食用方法：轻触返回，长按桌面。" />
+
 
 </RelativeLayout>

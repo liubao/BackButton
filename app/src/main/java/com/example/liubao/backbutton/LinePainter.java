@@ -1,0 +1,64 @@
+package com.example.liubao.backbutton;
+
+import android.graphics.Canvas;
+import android.graphics.CornerPathEffect;
+import android.graphics.Paint;
+
+/**
+ * * Created by liubao on 2018/7/23.
+ */
+class LinePainter implements Painter {
+
+    public AlphaDS alphaDS;
+    public SizeDS sizeDS;
+    private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+    int rectW = 12;
+
+    public LinePainter() {
+        sizeDS = new SizeDS();
+        alphaDS = new AlphaDS();
+        paint.setColor(0xFFB0C4DE);
+        paint.setAlpha(alphaDS.alpha);
+        paint.setPathEffect(new CornerPathEffect(4));
+    }
+
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        int width = canvas.getWidth();
+        int height = canvas.getHeight();
+        canvas.drawRect(0, 0, rectW, height, paint);
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+        alphaDS.set(alpha);
+        paint.setAlpha(alpha);
+    }
+
+    @Override
+    public int getWidth() {
+        return sizeDS.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return sizeDS.height;
+    }
+
+    @Override
+    public void onSizeChanged(int w, int h) {
+        sizeDS.set(w);
+    }
+
+    @Override
+    public IDataController<Integer> getSizeDS() {
+        return sizeDS;
+    }
+
+    @Override
+    public IDataController<Integer> getAlphaDS() {
+        return alphaDS;
+    }
+}
