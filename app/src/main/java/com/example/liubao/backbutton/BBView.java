@@ -69,7 +69,7 @@ public class BBView extends AppCompatImageView {
     }
 
     private WindowManager windowManager;
-    private WindowManager.LayoutParams mParams;
+    public WindowManager.LayoutParams mParams;
     private boolean isViewShow;
 
     public void show() {
@@ -158,7 +158,7 @@ public class BBView extends AppCompatImageView {
             mParams.x = xds.getValue();
             mParams.y = yds.getValue();
         }
-
+        invalidate();
         windowManager.updateViewLayout(BBView.this, mParams);
     }
 
@@ -194,23 +194,23 @@ public class BBView extends AppCompatImageView {
             case MotionEvent.ACTION_UP:
                 oldX = event.getRawX();
                 oldY = event.getRawY();
-
+                float w;
                 //纵向
                 if (xds.getFromMemory()) {
-                    if (oldX > BBCommon.screenWidth / 2) {
-                        mParams.x = (int) (BBCommon.screenWidth - getWidth());
-                    } else {
-                        mParams.x = 0;
-                    }
+                    w = BBCommon.screenWidth;
                 } else {
-                    if (oldX > BBCommon.screenHeight / 2) {
-                        mParams.x = (int) (BBCommon.screenHeight - getWidth());
-                    } else {
-                        mParams.x = 0;
-                    }
+                    w = BBCommon.screenHeight;
+                }
+                if (oldX > w / 2) {
+                    mParams.x = (int) (w - getWidth());
+                } else {
+                    mParams.x = 0;
                 }
                 if (moved) {
-                    xds.setValue(mParams.x);
+                    if (xds.getValue() != mParams.x) {
+                        invalidate();
+                        xds.setValue(mParams.x);
+                    }
                     yds.setValue(mParams.y);
                 }
                 windowManager.updateViewLayout(BBView.this, mParams);

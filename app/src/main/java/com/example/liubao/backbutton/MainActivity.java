@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         styleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                BBView.getInstance().setPainter(checkedId == R.id.lineStyle ? new LinePainter() : new StarPainter());
+                BBView.getInstance().setPainter(checkedId == R.id.lineStyle ? new LinePainter(BBView.getInstance()) : new StarPainter());
             }
         });
         styleRG.check(BBView.getInstance().painter instanceof LinePainter ? R.id.lineStyle : R.id.roundStyle);
@@ -123,13 +123,14 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener permissionClickLis = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!Settings.canDrawOverlays(MainActivity.this)) {
+                if (v == drawOverlaysSwitch) {
+                    boolean canDrawOverlays = Settings.canDrawOverlays(MainActivity.this);
+                    drawOverlaysSwitch.setChecked(canDrawOverlays);
                     openOverlaysActivity();
-                    return;
                 }
-                boolean isOn = Utils.isAccessibilitySettingsOn(MainActivity.this, BBCommon.serviceName);
-                accessibilityServiceSwitch.setChecked(isOn);
-                if (!isOn) {
+                if (v == accessibilityServiceSwitch) {
+                    boolean isOn = Utils.isAccessibilitySettingsOn(MainActivity.this, BBCommon.serviceName);
+                    accessibilityServiceSwitch.setChecked(isOn);
                     openServiceActivity();
                 }
             }
@@ -257,11 +258,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         boolean canDraw = Settings.canDrawOverlays(this);
         drawOverlaysSwitch.setChecked(canDraw);
-        hasPermission = canDraw && Utils.isAccessibilitySettingsOn(this,
+        boolean isAccessibilitySettingsOn = Utils.isAccessibilitySettingsOn(this,
                 BBCommon.serviceName);
-        accessibilityServiceSwitch.setChecked(hasPermission);
+        hasPermission = canDraw && isAccessibilitySettingsOn;
+        accessibilityServiceSwitch.setChecked(isAccessibilitySettingsOn);
         if (hasPermission) {
             setFunctionViewVisibility(View.VISIBLE);
+        } else {
+            setFunctionViewVisibility(View.INVISIBLE);
         }
     }
 

@@ -14,8 +14,10 @@ class LinePainter implements Painter {
     private Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     int rectW = 12;
+    BBView view;
 
-    public LinePainter() {
+    public LinePainter(BBView v) {
+        view = v;
         sizeDS = new SizeDS();
         alphaDS = new AlphaDS();
         paint.setColor(0xFFB0C4DE);
@@ -28,7 +30,13 @@ class LinePainter implements Painter {
     public void onDraw(Canvas canvas) {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
-        canvas.drawRect(0, 0, rectW, height, paint);
+        if (view.mParams != null) {
+            if (view.mParams.x == 0) {
+                canvas.drawRect(0, 0, rectW, height, paint);
+            } else {
+                canvas.drawRect(width - rectW, 0, width, height, paint);
+            }
+        }
     }
 
     @Override
