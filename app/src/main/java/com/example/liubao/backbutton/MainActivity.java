@@ -129,6 +129,12 @@ public class MainActivity extends AppCompatActivity {
                     openOverlaysActivity();
                 }
                 if (v == accessibilityServiceSwitch) {
+                    boolean canDrawOverlays = Settings.canDrawOverlays(MainActivity.this);
+                    if (!canDrawOverlays) {
+                        drawOverlaysSwitch.setChecked(canDrawOverlays);
+                        openOverlaysActivity();
+                        return;
+                    }
                     boolean isOn = Utils.isAccessibilitySettingsOn(MainActivity.this, BBCommon.serviceName);
                     accessibilityServiceSwitch.setChecked(isOn);
                     openServiceActivity();
@@ -241,14 +247,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openOverlaysActivity() {
-        Toast.makeText(MainActivity.this, "打开浮窗权限", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "打开浮窗权限", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                 Uri.parse("package:" + getPackageName()));
         startActivityForResult(intent, PERMISSION_REQ_CODE_OVERLAY);
     }
 
     public void openServiceActivity() {
-        Toast.makeText(MainActivity.this, "打开服务权限", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, "打开服务权限", Toast.LENGTH_LONG).show();
         Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
         startActivityForResult(intent, PERMISSION_REQ_CODE_SERVICE);
     }
@@ -256,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         boolean canDraw = Settings.canDrawOverlays(this);
         drawOverlaysSwitch.setChecked(canDraw);
         boolean isAccessibilitySettingsOn = Utils.isAccessibilitySettingsOn(this,
@@ -268,5 +275,4 @@ public class MainActivity extends AppCompatActivity {
             setFunctionViewVisibility(View.INVISIBLE);
         }
     }
-
 }
