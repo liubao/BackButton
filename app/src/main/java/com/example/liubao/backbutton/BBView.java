@@ -42,13 +42,17 @@ public class BBView extends AppCompatImageView {
     public BaseClickDataController doubleClickDS;
     public BaseClickDataController longClickDS;
     Painter painter;
+    PainterDS painterDS;
+
     public XYDS xds;
     public XYDS yds;
 
     public BBView(final Context context) {
         super(context);
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);//获得WindowManager对象
-        painter = new StarPainter();
+        painterDS = new PainterDS(BBCommon.SHARED_PREFERENCES_STYLE, this);
+        painter = painterDS.getPainter();
+
         doubleClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_DOUBLE);
         longClickDS = new BaseClickDataController(BBCommon.SHARED_PREFERENCES_LONG);
         Configuration configuration = getResources().getConfiguration(); //获取设置的配置信息

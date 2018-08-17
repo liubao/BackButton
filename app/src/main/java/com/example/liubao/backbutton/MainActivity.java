@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity {
         styleRG.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                BBView.getInstance().setPainter(checkedId == R.id.lineStyle ? new LinePainter(BBView.getInstance()) : new StarPainter());
+                BBView.getInstance().painterDS.set(
+                        checkedId == R.id.lineStyle ? BBCommon.STYLE_LINE : BBCommon.STYLE_STAR);
+                BBView.getInstance().setPainter(BBView.getInstance().painterDS.getPainter());
             }
         });
         styleRG.check(BBView.getInstance().painter instanceof LinePainter ? R.id.lineStyle : R.id.roundStyle);
@@ -201,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         BBView.getInstance().getSizeDS().putToDisk();
         BBView.getInstance().xds.putToDisk();
         BBView.getInstance().yds.putToDisk();
+        BBView.getInstance().painterDS.putToDisk();
     }
 
     @Override

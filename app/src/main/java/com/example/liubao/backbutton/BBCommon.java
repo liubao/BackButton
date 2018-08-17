@@ -39,9 +39,12 @@ public class BBCommon {
     public static final String ACTION_BACK = "b";
     public static final String ACTION_HOME = "h";
     public static final String ACTION_RECENT = "r";
+    public static final String STYLE_STAR = "style_star";
+    public static final String STYLE_LINE = "style_line";
 
     public static final String SHARED_PREFERENCES_PREFIX = "s_p_";
 
+    public static final String SHARED_PREFERENCES_STYLE = SHARED_PREFERENCES_PREFIX + "style";
     public static final String SHARED_PREFERENCES_DOUBLE = SHARED_PREFERENCES_PREFIX + "double";
     public static final String SHARED_PREFERENCES_LONG = SHARED_PREFERENCES_PREFIX + "long";
     public static final String SHARED_PREFERENCES_ALPHA = SHARED_PREFERENCES_PREFIX + "alpha";
