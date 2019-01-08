@@ -31,7 +31,7 @@ class LinePainter implements Painter {
         int width = canvas.getWidth();
         int height = canvas.getHeight();
         if (view.mParams != null) {
-            if (view.mParams.x == 0) {
+            if (view.mParams.x <= view.getWidth()) {
                 canvas.drawRect(0, 0, rectW, height, paint);
             } else {
                 canvas.drawRect(width - rectW, 0, width, height, paint);
