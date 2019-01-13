@@ -1,10 +1,13 @@
-package com.example.liubao.backbutton;
+package com.example.liubao.backbutton.common;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.util.DisplayMetrics;
 import android.view.Display;
 import android.view.WindowManager;
+
+import com.example.liubao.backbutton.MainApplication;
+import com.example.liubao.backbutton.Utils;
 
 /**
  * * Created by liubao on 2018/6/8.

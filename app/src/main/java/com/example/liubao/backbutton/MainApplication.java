@@ -3,6 +3,9 @@ package com.example.liubao.backbutton;
 import android.app.Application;
 import android.content.Context;
 
+import com.example.liubao.backbutton.common.LoginCommon;
+import com.example.liubao.backbutton.event.EventCode;
+import com.example.liubao.backbutton.event.EventController;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -17,6 +20,8 @@ public class MainApplication extends Application {
         super.onCreate();
         context = getApplicationContext();
         initBugly();
+        LoginCommon.initCommon();
+        EventController.send(EventCode.APP_LAUNCHED);
     }
 
     private void initBugly() {

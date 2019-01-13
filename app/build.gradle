@@ -6,8 +6,8 @@ android {
         applicationId "com.example.liubao.backbutton"
         minSdkVersion 24
         targetSdkVersion 27
-        versionCode 35
-        versionName "3.5"
+        versionCode 40
+        versionName "4.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
@@ -25,7 +25,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:27.1.1'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -33,4 +32,11 @@ dependencies {
     implementation 'com.tencent.bugly:crashreport:2.8.6.0'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     implementation 'com.tencent.bugly:nativecrashreport:3.6.0.1'
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'//导入retrofit
+    implementation 'com.google.code.gson:gson:2.8.4'//Gson 库
+    //下面两个是RxJava 和 RxAndroid
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'//转换器，请求结果转换成Model
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'//配合Rxjava 使用
 }

@@ -20,6 +20,15 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.liubao.backbutton.common.BBCommon;
+import com.example.liubao.backbutton.event.EventCode;
+import com.example.liubao.backbutton.event.EventController;
+import com.example.liubao.backbutton.utils.DensityUtil;
+import com.example.liubao.backbutton.view.AlphaDS;
+import com.example.liubao.backbutton.view.BBView;
+import com.example.liubao.backbutton.view.LinePainter;
+import com.example.liubao.backbutton.view.SizeDS;
+
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -47,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initTest();
         resources = getResources();
         hasPermission = initPermissionCheckBox();
         sizeSeekBarHint = findViewById(R.id.size_hint);
@@ -81,6 +91,21 @@ public class MainActivity extends AppCompatActivity {
         if (hasPermission) {
             setFunctionViewVisibility(View.VISIBLE);
         }
+    }
+
+    private void initTest() {
+        TextView textView = findViewById(R.id.test);
+        if (BBCommon.DEBUG) {
+            textView.setVisibility(View.GONE);
+            return;
+        }
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventController.send(EventCode.APP_LAUNCHED);
+            }
+        });
+
     }
 
     private void initHideMode() {

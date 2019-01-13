@@ -1,11 +1,13 @@
-package com.example.liubao.backbutton;
+package com.example.liubao.backbutton.view;
 
 import android.graphics.Canvas;
+
+import com.example.liubao.backbutton.IDataController;
 
 /**
  * * Created by liubao on 2018/7/23.
  */
-interface Painter {
+public interface Painter {
     void onDraw(Canvas canvas);
 
     void setAlpha(int alpha);

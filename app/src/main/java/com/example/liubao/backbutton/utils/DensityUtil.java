@@ -1,4 +1,6 @@
-package com.example.liubao.backbutton;
+package com.example.liubao.backbutton.utils;
+
+import com.example.liubao.backbutton.MainApplication;
 
 /**
  * * Created by liubao on 2018/6/8.

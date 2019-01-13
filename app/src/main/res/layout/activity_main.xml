@@ -50,10 +50,10 @@
         android:id="@+id/size_seek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/service_check"
+        android:layout_alignTop="@+id/size_hint"
         android:layout_alignBottom="@+id/size_hint"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/size_hint"
-        android:layout_below="@id/service_check"
         android:layout_toRightOf="@id/size_hint"
         android:max="100"
         android:progress="50" />
@@ -72,10 +72,10 @@
         android:id="@+id/alpha_seek"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/service_check"
+        android:layout_alignTop="@+id/alpha_hint"
         android:layout_alignBottom="@+id/alpha_hint"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/alpha_hint"
-        android:layout_below="@id/service_check"
         android:layout_toRightOf="@id/alpha_hint"
         android:max="100"
         android:progress="50" />
@@ -206,4 +206,11 @@
         android:text="食用方法：轻触返回，长按桌面。" />
 
 
+    <TextView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:padding="@dimen/fun_size"
+        android:text="test" />
 </RelativeLayout>

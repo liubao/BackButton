@@ -1,4 +1,4 @@
-package com.example.liubao.backbutton;
+package com.example.liubao.backbutton.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,11 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+
+import com.example.liubao.backbutton.BaseClickDataController;
+import com.example.liubao.backbutton.IDataController;
+import com.example.liubao.backbutton.MainApplication;
+import com.example.liubao.backbutton.common.BBCommon;
 
 /**
  * * Created by liubao on 2018/5/12.
