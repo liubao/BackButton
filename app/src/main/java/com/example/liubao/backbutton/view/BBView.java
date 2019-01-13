@@ -46,8 +46,8 @@ public class BBView extends AppCompatImageView {
 
     public BaseClickDataController doubleClickDS;
     public BaseClickDataController longClickDS;
-    Painter painter;
-    PainterDS painterDS;
+    public Painter painter;
+    public PainterDS painterDS;
 
     public XYDS xds;
     public XYDS yds;

@@ -9,7 +9,7 @@ import com.example.liubao.backbutton.common.BBCommon;
 /**
  * * Created by liubao on 2018/8/17.
  */
-class PainterDS implements IDataController<String> {
+public class PainterDS implements IDataController<String> {
 
     public String style;
 
