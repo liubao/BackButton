@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initTest() {
         TextView textView = findViewById(R.id.test);
-        if (BBCommon.DEBUG) {
+        if (!BBCommon.DEBUG) {
             textView.setVisibility(View.GONE);
             return;
         }
