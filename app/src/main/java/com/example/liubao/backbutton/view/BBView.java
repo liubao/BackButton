@@ -29,7 +29,7 @@ public class BBView extends AppCompatImageView {
     private GestureDetector gestureDetector;
 
 
-    public static BBView getInstance() {
+    public synchronized static BBView getInstance() {
         if (instance == null) {
             instance = new BBView(MainApplication.context);
         }
