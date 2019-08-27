@@ -5,5 +5,5 @@
     android:accessibilityFlags="flagDefault"
     android:canRetrieveWindowContent="false"
     android:description="@string/accessibility_service_description"
-    android:packageNames="com.example.liubao.backbutton"
-    android:settingsActivity="com.example.liubao.backbutton.MainActivity" />
+    android:packageNames="com.liubao.backbutton"
+    android:settingsActivity="com.liubao.backbutton.MainActivity" />
