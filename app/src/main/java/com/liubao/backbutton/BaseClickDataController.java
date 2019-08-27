@@ -1,5 +1,6 @@
 package com.liubao.backbutton;
 
+
 import android.content.Intent;
 
 /**
@@ -8,12 +9,11 @@ import android.content.Intent;
 public class BaseClickDataController implements IDataController<String> {
 
     public String action;
-
-    public Intent intent;
+    public ActionIntent intent;
     public String fileKey;
 
     public BaseClickDataController(String fileKey) {
-        intent = new Intent();
+        intent = new ActionIntent();
         this.fileKey = fileKey;
         action = getFromDisk();
         intent.setAction(action);

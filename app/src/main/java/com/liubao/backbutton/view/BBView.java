@@ -1,12 +1,10 @@
 package com.liubao.backbutton.view;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -14,6 +12,8 @@ import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
 
+import com.liubao.backbutton.ActionIntent;
+import com.liubao.backbutton.ActionObservable;
 import com.liubao.backbutton.BaseClickDataController;
 import com.liubao.backbutton.IDataController;
 import com.liubao.backbutton.MainApplication;
@@ -40,9 +40,8 @@ public class BBView extends AppCompatImageView {
     private float oldY;
     private float oldX;
     private boolean moved;
-    LocalBroadcastManager localBroadcastManager;
 
-    final Intent backIntent = new Intent(BBCommon.ACTION_BACK);
+    final ActionIntent backIntent = new ActionIntent(BBCommon.ACTION_BACK);
 
     public BaseClickDataController doubleClickDS;
     public BaseClickDataController longClickDS;
@@ -71,7 +70,6 @@ public class BBView extends AppCompatImageView {
         yds.set(orientationPortrait);
 
 
-        localBroadcastManager = LocalBroadcastManager.getInstance(context);
         touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
 
@@ -266,11 +264,11 @@ public class BBView extends AppCompatImageView {
     }
 
 
-    public void dispatchClick(Intent intent) {
+    public void dispatchClick(ActionIntent intent) {
         if (moved || intent == null) {
             return;
         }
-        localBroadcastManager.sendBroadcast(intent);
+        ActionObservable.getInstance().notifyObservers(intent);
     }
 
     public void updateAlpha(int a) {

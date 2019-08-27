@@ -1,12 +1,9 @@
 package com.liubao.backbutton;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.provider.Settings;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
@@ -14,14 +11,16 @@ import android.widget.Toast;
 import com.liubao.backbutton.common.BBCommon;
 import com.liubao.backbutton.view.BBView;
 
+import java.util.Observable;
+import java.util.Observer;
+
 /**
  * * Created by liubao on 2018/5/12.
  */
 public class MyAccessibilityService extends AccessibilityService {
     private final static String TAG = MyAccessibilityService.class.getSimpleName();
 
-    private MyBroadcastReceiver myBroadcastReceiver;
-    private LocalBroadcastManager localBroadcastManager;
+    private ActionObserver actionObserver = new ActionObserver();
 
     @Override
     public void onCreate() {
@@ -30,9 +29,7 @@ public class MyAccessibilityService extends AccessibilityService {
         intentFilter.addAction(BBCommon.ACTION_BACK);
         intentFilter.addAction(BBCommon.ACTION_HOME);
         intentFilter.addAction(BBCommon.ACTION_RECENT);
-        myBroadcastReceiver = new MyBroadcastReceiver();
-        localBroadcastManager = LocalBroadcastManager.getInstance(this);
-        localBroadcastManager.registerReceiver(myBroadcastReceiver, intentFilter);
+        ActionObservable.getInstance().addObserver(actionObserver);
     }
 
     @Override
@@ -58,10 +55,10 @@ public class MyAccessibilityService extends AccessibilityService {
     public void onInterrupt() {
     }
 
-    class MyBroadcastReceiver extends BroadcastReceiver {
-
+    public class ActionObserver implements Observer {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void update(Observable o, Object arg) {
+            ActionIntent intent = (ActionIntent) arg;
             if (null != intent) {
                 String action = intent.getAction();
                 if (action == null) {
@@ -89,6 +86,6 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        localBroadcastManager.unregisterReceiver(myBroadcastReceiver);
+        ActionObservable.getInstance().deleteObserver(actionObserver);
     }
 }
