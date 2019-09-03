@@ -5,12 +5,13 @@ import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.os.Build;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.WindowManager;
+
+import androidx.appcompat.widget.AppCompatImageView;
 
 import com.liubao.backbutton.ActionIntent;
 import com.liubao.backbutton.ActionObservable;
